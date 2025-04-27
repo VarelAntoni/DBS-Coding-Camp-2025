@@ -1,5 +1,5 @@
 
-!mkdir -p ~/.kaggle
+!mkdir -p ~/.kaggle /n
 !cp kaggle.json ~/.kaggle/
 !chmod 600 ~/.kaggle/kaggle.json
 !kaggle datasets download -d ashishjangra27/face-mask-12k-images-dataset
