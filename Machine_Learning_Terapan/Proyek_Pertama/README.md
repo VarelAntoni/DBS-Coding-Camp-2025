@@ -54,8 +54,8 @@ Distribusi kategori cukup seimbang, meskipun kelas low sedikit lebih sedikit dib
 3. Train-test split: Data dibagi menjadi 80% untuk pelatihan dan 20% untuk pengujian.
 
 ### Alasan tahapan dilakukan:
-- Encoding diperlukan agar label dapat diproses oleh algoritma ML.
 - Standardisasi penting untuk algoritma seperti SVM yang sensitif terhadap skala fitur.
+- Encoding diperlukan agar label dapat diproses oleh algoritma ML.
 - Split data diperlukan agar evaluasi dilakukan secara objektif dan tidak bias.
 
 ## Modeling
