@@ -49,8 +49,8 @@ Distribusi kategori cukup seimbang, meskipun kelas low sedikit lebih sedikit dib
 
 ## Data Preparation
 ### Langkah-langkah data preparation:
-1. Encoding: Menggunakan LabelEncoder untuk mengubah kategori quality_label menjadi nilai numerik.
-2. Standardization: Menstandardisasi fitur numerik menggunakan StandardScaler.
+1. Standardization: Menstandardisasi fitur numerik menggunakan StandardScaler.
+2. Encoding: Menggunakan LabelEncoder untuk mengubah kategori quality_label menjadi nilai numerik.
 3. Train-test split: Data dibagi menjadi 80% untuk pelatihan dan 20% untuk pengujian.
 
 ### Alasan tahapan dilakukan:
