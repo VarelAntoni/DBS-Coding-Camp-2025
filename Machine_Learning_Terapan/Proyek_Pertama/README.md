@@ -118,20 +118,19 @@ Ketiga model menunjukkan akurasi training dan testing mendekati sempurna , menan
   - Precision: 0.9447
   - Recall   : 0.9450
   - F1-Score : 0.9425
-----------------------------------------
+
 - Support Vector Machine (SVM)
   - Accuracy : 0.9400
   - Precision: 0.9455
   - Recall   : 0.9400
   - F1-Score : 0.9396
-----------------------------------------
+
 - XGBoost
   - Accuracy : 0.9900
   - Precision: 0.9900
   - Recall   : 0.9900
   - F1-Score : 0.9900
-----------------------------------------
-
+    
 ## Summary
 
 Model ini dikembangkan untuk memprediksi risiko diabetes (Yes, No, Possible), sebagai upaya mendukung deteksi dini dalam dunia medis. Evaluasi model menunjukkan bahwa:
