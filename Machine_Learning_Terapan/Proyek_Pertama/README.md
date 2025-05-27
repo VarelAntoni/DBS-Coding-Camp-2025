@@ -113,9 +113,36 @@ Ketiga model menunjukkan akurasi training dan testing mendekati sempurna , menan
 
 ### Hasil Proyek
 
-- Logistic Regression: Accuracy = 0.94
-- SVM: Accuracy = 0.94
-- XGBoost: Accuracy = 0.99
+Logistic Regression
+  Accuracy : 0.9450
+  Precision: 0.9447
+  Recall   : 0.9450
+  F1-Score : 0.9425
+----------------------------------------
+Support Vector Machine (SVM)
+  Accuracy : 0.9400
+  Precision: 0.9455
+  Recall   : 0.9400
+  F1-Score : 0.9396
+----------------------------------------
+XGBoost
+  Accuracy : 0.9900
+  Precision: 0.9900
+  Recall   : 0.9900
+  F1-Score : 0.9900
+----------------------------------------
+
+## Summary
+
+Model ini dikembangkan untuk memprediksi risiko diabetes (Yes, No, Possible), sebagai upaya mendukung deteksi dini dalam dunia medis. Evaluasi model menunjukkan bahwa:
+- Semua problem statement terjawab:
+  - Model berhasil mengklasifikasikan risiko dengan sangat baik.
+  - Tiga model diuji dan dibandingkan untuk memilih yang paling andal.
+- Goals proyek tercapai:
+  - Akurasi tinggi (hingga 99%) menunjukkan model sangat layak diterapkan.
+- Solusi yang dihasilkan berdampak:
+  - Model XGBoost dapat membantu pengambilan keputusan medis secara otomatis.
+  - Dengan recall 99%, potensi kesalahan dalam melewatkan kasus diabetes sangat kecil, sehingga bisa membantu mencegah keterlambatan penanganan.
 
 ---
 
