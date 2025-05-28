@@ -68,10 +68,11 @@ Terdapat ketidakseimbangan distribusi kelas dengan dominasi kelas "Y", disertai 
 
 ### Langkah-langkah data preparation
 
-1. **Outlier Handling**: Menghapus data ekstrem berdasarkan IQR.
-2. **Standardization**: Menstandardisasi fitur numerik menggunakan `StandardScaler`.
-3. **Encoding**: Label target dan fitur kategorikal diubah menggunakan `LabelEncoder`.
-4. **Train-test split**: Data dibagi 80% training, 20% testing.
+1. **pembersihan string**: Mengganti label f menjadi F
+2. **Outlier Handling**: Menghapus data ekstrem berdasarkan IQR.
+3. **Standardization**: Menstandardisasi fitur numerik menggunakan `StandardScaler`.
+4. **Encoding**: Label target dan fitur kategorikal diubah menggunakan `LabelEncoder`.
+5. **Train-test split**: Data dibagi 80% training, 20% testing.
 
 ### Alasan tahapan dilakukan
 
@@ -114,22 +115,22 @@ Ketiga model menunjukkan akurasi training dan testing mendekati sempurna , menan
 ### Hasil Proyek
 
 - Logistic Regression
-  - Accuracy : 0.9450
-  - Precision: 0.9447
-  - Recall   : 0.9450
-  - F1-Score : 0.9425
+  - Accuracy : 0.9206
+  - Precision: 0.9033
+  - Recall   : 0.9206
+  - F1-Score : 0.9106
 
 - Support Vector Machine (SVM)
-  - Accuracy : 0.9400
-  - Precision: 0.9455
-  - Recall   : 0.9400
-  - F1-Score : 0.9396
+  - Accuracy : 0.9444
+  - Precision: 0.9451
+  - Recall   : 0.9444
+  - F1-Score : 0.9446
 
 - XGBoost
-  - Accuracy : 0.9900
-  - Precision: 0.9900
-  - Recall   : 0.9900
-  - F1-Score : 0.9900
+  - Accuracy : 0.9921
+  - Precision: 0.9921
+  - Recall   : 0.9921
+  - F1-Score : 0.9917
     
 ## Summary
 
