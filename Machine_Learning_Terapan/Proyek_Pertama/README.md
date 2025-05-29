@@ -44,6 +44,8 @@ Dataset berisi data kesehatan dan demografis dari pasien untuk prediksi diabetes
 Dataset diambil dari Kaggle:  
 [https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset](https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset)
 
+Dataset memiliki 1000 baris dan 14 kolom. data juga tergolong bersih karena tidak memiliki missing value dan data duplikat.
+
 ### Variabel-variabel
 
 - `ID`: Nomor identifikasi unik untuk setiap pasien
