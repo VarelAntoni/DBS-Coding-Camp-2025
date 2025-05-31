@@ -98,7 +98,7 @@ Terdapat ketidakseimbangan distribusi kelas dengan dominasi kelas "Y", disertai 
 5. **XGBoost**
    XGBoost adalah algoritma berbasis gradient boosting, yang membangun model secara berurutan. Setiap pohon keputusan yang baru akan mencoba memperbaiki kesalahan prediksi dari pohon sebelumnya dengan meminimalkan loss function menggunakan gradien dari error.
    
-   - Parameter Kunci: objective='multi:softmax', num_class=3, eval_metric='mlogloss', random_state=42, use_label_encoder=False.
+   Parameter Kunci: objective='multi:softmax', num_class=3, eval_metric='mlogloss', random_state=42, use_label_encoder=False.
 
 ### Visualisasi akurasi train vs test
 
