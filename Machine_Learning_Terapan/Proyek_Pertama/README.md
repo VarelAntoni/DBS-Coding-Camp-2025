@@ -88,11 +88,17 @@ Terdapat ketidakseimbangan distribusi kelas dengan dominasi kelas "Y", disertai 
 ### Algoritma yang digunakan
 
 1. **Logistic Regression**
-   - Model linier sebagai baseline.
-2. **Support Vector Machine (SVM)**
-   - Mencari hyperplane terbaik untuk klasifikasi.
-3. **XGBoost**
-   - Model boosting berbasis pohon, kuat terhadap noise.
+   Logistic Regression adalah model klasifikasi linier yang digunakan untuk memprediksi probabilitas keanggotaan suatu kelas. Model ini bekerja dengan memetakan kombinasi linier dari fitur input ke dalam rentang probabilitas (antara 0 dan 1) menggunakan fungsi sigmoid (pada kasus biner) atau fungsi softmax (untuk multikelas). Model ini memaksimalkan log-likelihood, yaitu kemungkinan observasi data berdasarkan distribusi Bernoulli atau multinomial.
+   
+   Parameter Kunci: random_state=42, max_iter=200.
+3. **Support Vector Machine (SVM)**
+   Support Vector Machine adalah algoritma klasifikasi yang bekerja dengan mencari hyperplane (garis pemisah dalam ruang fitur) terbaik yang memisahkan data antar kelas dengan margin terbesar. Titik-titik data yang berada paling dekat dengan hyperplane disebut support vectors dan menjadi penentu utama dalam pembentukan batas keputusan.
+   
+   Parameter Kunci: kernel='linear', random_state=42.
+5. **XGBoost**
+   XGBoost adalah algoritma berbasis gradient boosting, yang membangun model secara berurutan. Setiap pohon keputusan yang baru akan mencoba memperbaiki kesalahan prediksi dari pohon sebelumnya dengan meminimalkan loss function menggunakan gradien dari error.
+   
+   - Parameter Kunci: objective='multi:softmax', num_class=3, eval_metric='mlogloss', random_state=42, use_label_encoder=False.
 
 ### Visualisasi akurasi train vs test
 
