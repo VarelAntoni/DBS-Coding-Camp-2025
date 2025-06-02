@@ -57,29 +57,57 @@ Proses ini penting agar model bisa mempelajari pola dari data bersih, terstruktu
 
 Model ini menggunakan fitur audio seperti `danceability`, `energy`, `acousticness`, dll. Cosine similarity dihitung antar semua lagu, dan fungsi `recommend_tracks(track_name)` dibuat untuk memberikan 5 lagu yang paling mirip dengan input pengguna.
 
-**Contoh output:**
-Rekomendasi lagu mirip dengan *"I'm Ready - Radio Edit"*:
-- B2B - James Hope-Tita Lau
-- Push Me - Neopolitan
-- etc.
+**Contoh kode:**
+
+![Content-Based Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png)
+
+**Visualisasi:**
+
+![Content-Based Visualized](Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png)
 
 ### Collaborative Filtering
 
 Menggunakan `KNNBasic` dari Surprise (user-based). Dataset simulasi `df_ratings` digunakan sebagai input. Model memprediksi rating lagu-lagu yang belum dirating oleh user, dan mengembalikan lagu dengan skor tertinggi.
 
-**Contoh output:**
-Rekomendasi untuk user_10:
-- Psyche-Out - Meat Beat Manifesto
-- Saku - Susumu Yokota
-- etc.
+**Contoh kode:**
+
+![Collaborative Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png)
+
+**Visualisasi:**
+
+![Collaborative Visualized](Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png)
+
+### Combine Filtering
+
+Untuk menunjukkan kedua pendekatan secara berdampingan, hasil rekomendasi dari content-based dan collaborative digabung ke dalam satu tabel.
+
+**Tabel Gabungan:**
+
+![Combine Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png)
+
+### Compare Filtering
+
+Perbandingan visual jumlah rekomendasi yang berasal dari masing-masing metode.
+
+![Compare Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png)
 
 ## Evaluation
 
-Untuk content-based, evaluasi dilakukan secara kualitatif (melihat kemiripan nama/artis/fitur lagu).
-Untuk collaborative filtering, digunakan metrik RMSE dari Surprise:
+Evaluasi dilakukan secara kualitatif untuk content-based (dengan melihat kemiripan fitur dan genre), serta secara kuantitatif untuk collaborative filtering menggunakan metrik RMSE.
 
-**---Ini adalah bagian akhir laporan---**
+Untuk mengukur efektivitas sistem, juga dihitung Precision@k dan Recall@k dari hasil rekomendasi.
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+**Visualisasi Precision & Recall:**
+
+![Precision & Recall](Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png)
+
+---
+
+## Kesimpulan
+
+Proyek ini menunjukkan bagaimana dua pendekatan berbeda dalam sistem rekomendasi dapat saling melengkapi. Content-based cocok untuk memberikan lagu mirip dengan lagu yang disukai pengguna, sementara collaborative filtering membantu memberikan lagu baru yang mungkin disukai berdasarkan kesamaan selera dengan pengguna lain.
+
+---
+
+> _Catatan:_
+> Anda dapat menjalankan proyek ini melalui file notebook utama `Proyek_Akhir_Machine_Learning.ipynb`. Dataset dan gambar-gambar berada di dalam struktur direktori `Proyek_Akhir/images/`.
