@@ -57,39 +57,41 @@ Proses ini penting agar model bisa mempelajari pola dari data bersih, terstruktu
 
 Model ini menggunakan fitur audio seperti `danceability`, `energy`, `acousticness`, dll. Cosine similarity dihitung antar semua lagu, dan fungsi `recommend_tracks(track_name)` dibuat untuk memberikan 5 lagu yang paling mirip dengan input pengguna.
 
-**Contoh kode:**
+**Hasil:**
 
-![Content-Based Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png)
+![Content-Based Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png?raw=true)
 
 **Visualisasi:**
 
-![Content-Based Visualized](Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png)
+![Content-Based Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png?raw=true)
 
 ### Collaborative Filtering
 
 Menggunakan `KNNBasic` dari Surprise (user-based). Dataset simulasi `df_ratings` digunakan sebagai input. Model memprediksi rating lagu-lagu yang belum dirating oleh user, dan mengembalikan lagu dengan skor tertinggi.
 
-**Contoh kode:**
+**Hasil:**
 
-![Collaborative Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png)
+![Collaborative Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png?raw=true)
 
 **Visualisasi:**
 
-![Collaborative Visualized](Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png)
+![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png?raw=true)
 
 ### Combine Filtering
 
 Untuk menunjukkan kedua pendekatan secara berdampingan, hasil rekomendasi dari content-based dan collaborative digabung ke dalam satu tabel.
 
-**Tabel Gabungan:**
+**Hasil:**
 
-![Combine Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png)
+![Combine Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png?raw=true)
 
 ### Compare Filtering
 
 Perbandingan visual jumlah rekomendasi yang berasal dari masing-masing metode.
 
-![Compare Filtering](Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png)
+**Visualisasi:**
+
+![Compare Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png?raw=true)
 
 ## Evaluation
 
@@ -99,7 +101,7 @@ Untuk mengukur efektivitas sistem, juga dihitung Precision@k dan Recall@k dari h
 
 **Visualisasi Precision & Recall:**
 
-![Precision & Recall](Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png)
+![Precision & Recall](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png?raw=true)
 
 ---
 
@@ -109,5 +111,5 @@ Proyek ini menunjukkan bagaimana dua pendekatan berbeda dalam sistem rekomendasi
 
 ---
 
-> _Catatan:_
-> Anda dapat menjalankan proyek ini melalui file notebook utama `Proyek_Akhir_Machine_Learning.ipynb`. Dataset dan gambar-gambar berada di dalam struktur direktori `Proyek_Akhir/images/`.
+> _Catatan:_  
+> Anda dapat menjalankan proyek ini melalui file notebook utama `Proyek_Akhir_Machine_Learning.ipynb`. Dataset dan visualisasi berada di dalam struktur direktori `Proyek_Akhir/images/`.
