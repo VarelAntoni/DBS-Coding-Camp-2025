@@ -2,61 +2,61 @@
 
 ## Project Overview
 
-Dalam era digital saat ini, platform streaming musik seperti Spotify memiliki jutaan lagu. Hal ini sering kali membuat pengguna merasa kewalahan dalam menemukan lagu yang sesuai dengan selera mereka. Oleh karena itu, sistem rekomendasi berperan penting dalam meningkatkan pengalaman pengguna dan menjaga loyalitas mereka. Berdasarkan studi oleh Ricci et al. (2015), sistem rekomendasi terbukti meningkatkan engagement dan retensi pengguna dalam platform berbasis konten digital. Proyek ini bertujuan membangun dua jenis sistem rekomendasi: Content-Based Filtering dan Collaborative Filtering, menggunakan dataset dari Kaggle yang berisi metadata dan fitur audio dari lebih dari 300.000 lagu Spotify [^1].
+Rekomendasi musik telah menjadi fitur penting dalam industri streaming modern seperti Spotify, YouTube Music, dan Apple Music. Seiring bertambahnya jumlah lagu secara eksponensial, pengguna menghadapi tantangan dalam menemukan musik yang sesuai dengan preferensi mereka. Untuk itu, dibutuhkan sistem rekomendasi yang dapat memberikan saran lagu secara relevan dan personal.
 
-[^1]: M. Pandya, "Spotify Tracks Dataset", Kaggle, [Online]. Available: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
+Menurut [Schedl et al., 2015](https://ieeexplore.ieee.org/document/7120121), sistem rekomendasi musik dapat meningkatkan kepuasan pengguna dan engagement secara signifikan. Dalam proyek ini, dikembangkan sistem rekomendasi musik menggunakan dua pendekatan: **Content-Based Filtering** dan **Collaborative Filtering**, berdasarkan dataset Spotify yang diambil dari [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset).
 
 ## Business Understanding
 
-Sistem rekomendasi dapat memberikan dampak besar pada kepuasan pengguna dengan cara mengurangi beban pencarian dan meningkatkan personalisasi pengalaman.
+Sistem rekomendasi yang efektif dapat meningkatkan retensi pengguna dan waktu penggunaan aplikasi, sekaligus memberikan pengalaman yang lebih personal dan menyenangkan.
 
 ### Problem Statements
 
-- Bagaimana cara merekomendasikan lagu yang mirip dengan lagu favorit pengguna berdasarkan fitur audio?
-- Bagaimana cara memprediksi lagu yang mungkin disukai pengguna meskipun belum pernah didengarkan sebelumnya?
+- Bagaimana merekomendasikan lagu yang mirip dengan lagu favorit pengguna berdasarkan karakteristik audio?
+- Bagaimana memprediksi lagu yang belum pernah didengar oleh pengguna, tetapi kemungkinan besar akan disukai?
 
 ### Goals
 
-- Menghasilkan rekomendasi lagu serupa berdasarkan kemiripan fitur audio (content-based).
-- Mengembangkan sistem yang dapat memberikan rekomendasi lagu berdasarkan preferensi pengguna lain (collaborative filtering).
+- Menghasilkan daftar lagu mirip secara konten dengan lagu favorit pengguna.
+- Mengembangkan sistem prediksi lagu baru berdasarkan pola rating dari pengguna lain.
 
 ### Solution Statements
 
-- **Pendekatan 1:** Content-Based Filtering menggunakan cosine similarity antara fitur seperti `danceability`, `energy`, `valence`, `tempo`, dll.
-- **Pendekatan 2:** Collaborative Filtering menggunakan algoritma `KNNBasic` dari pustaka `Surprise`, berdasarkan simulasi interaksi pengguna.
+- Menggunakan **Content-Based Filtering** dengan pendekatan **cosine similarity** antar fitur audio (danceability, energy, valence, dll).
+- Menerapkan **Collaborative Filtering** menggunakan algoritma **KNNBasic** dari library `Surprise` untuk mempelajari interaksi user-item.
 
 ## Data Understanding
 
-Dataset digunakan dari Kaggle dan memuat lebih dari 300.000 lagu. Untuk efisiensi, hanya digunakan 20.000 data lagu.
+Dataset digunakan berasal dari: [Spotify Tracks Dataset - Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)  
+Jumlah lagu dalam dataset asli >300.000, tetapi diambil **20.000 sampel** untuk efisiensi komputasi.
 
-Link dataset: [Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)
-
-### Fitur utama pada dataset:
-- `track_id`: ID unik lagu
+### Fitur-Fitur Utama:
+- `track_id`: ID unik setiap lagu
 - `track_name`: judul lagu
-- `artists`: artis pembuat lagu
+- `artists`: nama artis
+- `danceability`, `energy`, `valence`, `tempo`, `acousticness`, `instrumentalness`: fitur numerik dari audio
 - `track_genre`: genre dari lagu
-- `popularity`: tingkat popularitas
-- Fitur audio seperti `danceability`, `energy`, `acousticness`, `valence`, `tempo`, `instrumentalness`, dll.
 
-Dataset ini mengandung beberapa missing values dan duplikat yang dibersihkan pada tahap selanjutnya.
+Dataset memiliki beberapa missing value dan duplikat, khususnya pada kolom `Unnamed: 0` dan beberapa ID track, yang telah dibersihkan sebelum modeling.
 
 ## Data Preparation
 
-Langkah-langkah preprocessing dilakukan sebagai berikut:
+Langkah-langkah yang dilakukan sebelum pelatihan model:
+1. Sampling 20.000 lagu dari dataset utama.
+2. Menghapus kolom tidak relevan (`Unnamed: 0`) dan nilai kosong.
+3. Menghapus duplikat berdasarkan `track_id`.
+4. Normalisasi fitur numerik (`danceability`, `energy`, dll) menggunakan `StandardScaler`.
+5. Simulasi interaksi pengguna:
+   - Dibuat 50 user fiktif
+   - Setiap user memberikan rating 10–30 lagu secara acak dengan skor 1–5
 
-1. **Sampling data:** Mengambil 20.000 lagu secara acak.
-2. **Cleaning data:** Menghapus kolom tidak relevan seperti `Unnamed: 0`, menghapus duplikat berdasarkan `track_id`, dan menghapus missing values.
-3. **Feature scaling:** Menormalkan fitur numerik menggunakan `StandardScaler`.
-4. **Simulasi interaksi pengguna:** Membuat 50 user fiktif, masing-masing memberikan rating acak pada 10–30 lagu sebagai data training collaborative filtering.
-
-Tahapan ini bertujuan memastikan data konsisten, relevan, dan siap diproses oleh algoritma pemodelan.
+Langkah ini penting agar data yang digunakan bersih, terstruktur, dan dapat digunakan untuk dua jenis pendekatan filtering.
 
 ## Modeling
 
 ### Content-Based Filtering
 
-Model menghitung cosine similarity antar lagu berdasarkan fitur audio. Hasil rekomendasi diperoleh dengan mengambil lagu dengan skor kemiripan tertinggi terhadap input.
+Model content-based menghitung cosine similarity antar lagu berdasarkan fitur audio. Fungsi `recommend_tracks(track_name)` digunakan untuk menghasilkan rekomendasi berdasarkan kemiripan konten lagu.
 
 **Hasil:**
 
@@ -66,9 +66,11 @@ Model menghitung cosine similarity antar lagu berdasarkan fitur audio. Hasil rek
 
 ![Content-Based Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png?raw=true)
 
+---
+
 ### Collaborative Filtering
 
-Model menggunakan `KNNBasic` dari `Surprise` dengan pendekatan user-based. Dataset yang disimulasikan menjadi matriks user-item untuk memprediksi rating lagu yang belum diberi rating.
+Menggunakan `KNNBasic` dari Surprise untuk membuat prediksi rating lagu-lagu yang belum didengarkan oleh user, kemudian memilih lagu dengan estimasi tertinggi.
 
 **Hasil:**
 
@@ -76,4 +78,47 @@ Model menggunakan `KNNBasic` dari `Surprise` dengan pendekatan user-based. Datas
 
 **Visualisasi:**
 
-![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visual
+![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png?raw=true)
+
+---
+
+### Combine Filtering
+
+Menggabungkan hasil dari dua pendekatan untuk dilihat dalam satu tabel:
+
+**Hasil:**
+
+![Combine Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png?raw=true)
+
+---
+
+### Compare Filtering
+
+Perbandingan jumlah hasil rekomendasi dari masing-masing pendekatan:
+
+**Visualisasi:**
+
+![Compare Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png?raw=true)
+
+## Evaluation
+
+Evaluasi dilakukan menggunakan dua pendekatan:
+
+- **Content-Based**: dievaluasi secara kualitatif (genre/artis serupa)
+- **Collaborative Filtering**: dievaluasi secara kuantitatif menggunakan RMSE
+
+Tambahan metrik:
+- **Precision@5**: Mengukur berapa banyak lagu yang relevan dari 5 lagu yang direkomendasikan
+- **Recall@5**: Mengukur berapa banyak lagu relevan dari total lagu yang disukai user yang berhasil direkomendasikan
+
+**Hasil Precision dan Recall:**
+
+![Precision & Recall](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png?raw=true)
+
+---
+
+## Kesimpulan
+
+Sistem rekomendasi ini membuktikan bahwa pendekatan berbasis konten dapat memberikan hasil yang cepat dan konsisten, terutama untuk lagu-lagu dengan fitur audio yang dominan. Sementara itu, pendekatan collaborative filtering lebih personal karena mempertimbangkan preferensi pengguna lain, tetapi membutuhkan cukup banyak data interaksi pengguna. Kedua pendekatan saling melengkapi dan idealnya dapat digabungkan dalam sistem produksi untuk meningkatkan akurasi dan relevansi rekomendasi.
+
+---
