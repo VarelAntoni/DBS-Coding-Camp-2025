@@ -70,7 +70,7 @@ Menggunakan cosine similarity antar vektor fitur numerik (`danceability`, `energ
 
 **Visualisasi:**
 
-- Heatmap cosine similarity:
+- Cosine similarity:
   
   ![Content-Based Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png?raw=true)
 
@@ -148,20 +148,32 @@ Perbandingan dilakukan untuk mengetahui performa masing-masing pendekatan dalam 
 
 ## Evaluation
 
-Evaluasi dilakukan berdasarkan dua pendekatan:
+Evaluasi dilakukan untuk menilai efektivitas sistem rekomendasi berdasarkan dua pendekatan: Content-Based Filtering dan Collaborative Filtering.
 
-- **Content-Based Filtering:** dievaluasi secara kualitatif berdasarkan genre dan artis yang mirip.
-- **Collaborative Filtering:** dievaluasi secara kuantitatif menggunakan metrik **RMSE**.
+### 1. Content-Based Filtering
 
-**Tambahan metrik evaluasi:**
-- **Precision@5:** Mengukur proporsi lagu relevan dari 5 lagu yang direkomendasikan.
-- **Recall@5:** Mengukur proporsi lagu relevan yang berhasil direkomendasikan dari total lagu yang disukai.
+Pendekatan ini dievaluasi secara **kualitatif** dengan memeriksa kesesuaian genre, artis, dan karakteristik audio antara lagu input dan lagu yang direkomendasikan. Selain itu, metrik berikut digunakan:
 
-**Visualisasi Evaluasi:**
+- **Precision@5**: Mengukur persentase lagu yang relevan dari 5 rekomendasi teratas.
+- **Recall@5**: Mengukur seberapa banyak lagu relevan yang berhasil direkomendasikan dari total lagu yang disukai.
 
-![Precision & Recall](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png?raw=true)
+Hasil menunjukkan bahwa rekomendasi memiliki kemiripan tinggi terhadap lagu input, dengan Precision dan Recall yang cukup tinggi (Precision@5 ≈ 0.80, Recall@5 ≈ 0.67).
 
----
+### 2. Collaborative Filtering
+
+Evaluasi dilakukan secara **kuantitatif** menggunakan:
+
+- **Root Mean Squared Error (RMSE)**: Mengukur rata-rata selisih kuadrat antara rating yang diprediksi dan aktual. Nilai RMSE yang diperoleh berada di kisaran **0.32 – 0.36**, menandakan performa prediksi yang baik.
+- **Precision@5 dan Recall@5**: Diterapkan dengan membandingkan prediksi Top-5 lagu terhadap data rating asli pengguna.
+
+### 3. Perbandingan
+
+| Metode               | Evaluasi       | Skor Utama   | Kelebihan                                 | Kelemahan                              |
+|---------------------|----------------|--------------|-------------------------------------------|----------------------------------------|
+| Content-Based       | Precision@5    | ~0.80        | Stabil, cocok untuk pengguna baru         | Tidak mempertimbangkan perilaku user lain |
+| Collaborative       | RMSE, P@5, R@5 | RMSE ~0.33   | Lebih personal dan adaptif                | Butuh data interaksi (cold-start issue) |
+
+Gabungan kedua pendekatan menghasilkan sistem rekomendasi yang lebih seimbang antara relevansi konten dan preferensi pengguna.
 
 ## Kesimpulan
 
