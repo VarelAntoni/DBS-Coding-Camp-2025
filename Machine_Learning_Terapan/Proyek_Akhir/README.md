@@ -22,22 +22,22 @@ Sistem rekomendasi yang efektif dapat meningkatkan retensi pengguna dan waktu pe
 
 ### Solution Statements
 
-- Menggunakan **Content-Based Filtering** dengan pendekatan **cosine similarity** antar fitur audio (danceability, energy, valence, dll).
+- Menggunakan **Content-Based Filtering** dengan pendekatan **cosine similarity** antar fitur audio (`danceability`, `energy`, `valence`, dll).
 - Menerapkan **Collaborative Filtering** menggunakan algoritma **KNNBasic** dari library `Surprise` untuk mempelajari interaksi user-item.
 
 ## Data Understanding
 
 Dataset digunakan berasal dari: [Spotify Tracks Dataset - Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)  
-Jumlah lagu dalam dataset asli >300.000, tetapi diambil **20.000 sampel** untuk efisiensi komputasi.
+Jumlah lagu dalam dataset asli lebih dari 300.000, namun diambil **20.000 sampel** untuk efisiensi komputasi.
 
 ### Fitur-Fitur Utama:
 - `track_id`: ID unik setiap lagu
-- `track_name`: judul lagu
-- `artists`: nama artis
-- `danceability`, `energy`, `valence`, `tempo`, `acousticness`, `instrumentalness`: fitur numerik dari audio
-- `track_genre`: genre dari lagu
+- `track_name`: Judul lagu
+- `artists`: Nama artis
+- `danceability`, `energy`, `valence`, `tempo`, `acousticness`, `instrumentalness`: Fitur numerik dari audio
+- `track_genre`: Genre dari lagu
 
-Dataset memiliki beberapa missing value dan duplikat, khususnya pada kolom `Unnamed: 0` dan beberapa ID track, yang telah dibersihkan sebelum modeling.
+Dataset memiliki beberapa missing value dan duplikat, khususnya pada kolom `Unnamed: 0` dan beberapa `track_id`, yang telah dibersihkan sebelum modeling.
 
 ## Data Preparation
 
@@ -47,8 +47,8 @@ Langkah-langkah yang dilakukan sebelum pelatihan model:
 3. Menghapus duplikat berdasarkan `track_id`.
 4. Normalisasi fitur numerik (`danceability`, `energy`, dll) menggunakan `StandardScaler`.
 5. Simulasi interaksi pengguna:
-   - Dibuat 50 user fiktif
-   - Setiap user memberikan rating 10–30 lagu secara acak dengan skor 1–5
+   - Dibuat 50 user fiktif.
+   - Setiap user memberikan rating 10–30 lagu secara acak dengan skor 1–5.
 
 Langkah ini penting agar data yang digunakan bersih, terstruktur, dan dapat digunakan untuk dua jenis pendekatan filtering.
 
@@ -56,37 +56,81 @@ Langkah ini penting agar data yang digunakan bersih, terstruktur, dan dapat digu
 
 ### Content-Based Filtering
 
-Model content-based menghitung cosine similarity antar lagu berdasarkan fitur audio. Fungsi `recommend_tracks(track_name)` digunakan untuk menghasilkan rekomendasi berdasarkan kemiripan konten lagu.
+**Tujuan:**  
+Memberikan rekomendasi lagu berdasarkan kemiripan fitur-fitur audio dari lagu favorit pengguna.
 
-**Hasil:**
+**Metode:**  
+Menggunakan cosine similarity antar vektor fitur numerik (`danceability`, `energy`, `valence`, dll). Cosine similarity mengukur sudut antara dua vektor dalam ruang berdimensi tinggi, yang digunakan untuk menentukan kemiripan antar lagu.
 
-![Content-Based Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png?raw=true)
+**Langkah-langkah:**
+1. Normalisasi fitur audio menggunakan `StandardScaler`.
+2. Hitung cosine similarity antara lagu input dan seluruh lagu lainnya.
+3. Urutkan berdasarkan skor similarity tertinggi.
+4. Ambil Top-N sebagai hasil rekomendasi.
 
 **Visualisasi:**
 
-![Content-Based Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png?raw=true)
+- Heatmap cosine similarity:
+  
+  ![Content-Based Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png?raw=true)
+
+- Visualisasi distribusi fitur:
+
+  ![Content-Based Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png?raw=true)
+
+**Kelebihan:**
+- Tidak memerlukan data pengguna lain.
+- Cocok untuk cold-start pengguna baru.
+
+**Kekurangan:**
+- Tidak mempertimbangkan selera kolektif.
+- Terbatas pada fitur konten yang tersedia.
 
 ---
 
 ### Collaborative Filtering
 
-Menggunakan `KNNBasic` dari Surprise untuk membuat prediksi rating lagu-lagu yang belum didengarkan oleh user, kemudian memilih lagu dengan estimasi tertinggi.
+**Tujuan:**  
+Memprediksi lagu-lagu yang disukai pengguna berdasarkan pola rating dari pengguna lain.
 
-**Hasil:**
+**Metode:**  
+Menggunakan pendekatan memory-based collaborative filtering dengan algoritma **KNNBasic** dari library `Surprise`. Metode ini membandingkan kemiripan antar item (lagu) berdasarkan rating yang diberikan oleh pengguna.
 
-![Collaborative Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png?raw=true)
+**Langkah-langkah:**
+1. Bentuk matriks interaksi user-item dari hasil simulasi pengguna.
+2. Latih model `KNNBasic` dengan cosine similarity (`user_based=False`).
+3. Lakukan prediksi rating lagu yang belum dirating oleh user.
+4. Ambil lagu dengan estimasi rating tertinggi sebagai rekomendasi.
 
 **Visualisasi:**
 
-![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png?raw=true)
+- Prediksi rating lagu:
+
+  ![Collaborative Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png?raw=true)
+
+- Top-N rekomendasi hasil prediksi:
+
+  ![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png?raw=true)
+
+**Kelebihan:**
+- Menghasilkan rekomendasi yang lebih personal.
+- Menggunakan pola kolektif seluruh pengguna.
+
+**Kekurangan:**
+- Tidak cocok untuk pengguna baru atau lagu baru (cold-start).
+- Bergantung pada data interaksi.
 
 ---
 
 ### Combine Filtering
 
-Menggabungkan hasil dari dua pendekatan untuk dilihat dalam satu tabel:
+**Tujuan:**  
+Menggabungkan hasil dari content-based dan collaborative filtering untuk memperkaya kualitas rekomendasi.
 
-**Hasil:**
+**Metode:**  
+Gabungkan daftar rekomendasi dari kedua pendekatan. Hasil bisa disortir berdasarkan skor gabungan, skor tertinggi, atau frekuensi kemunculan.
+
+**Visualisasi:**
 
 ![Combine Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png?raw=true)
 
@@ -94,24 +138,26 @@ Menggabungkan hasil dari dua pendekatan untuk dilihat dalam satu tabel:
 
 ### Compare Filtering
 
-Perbandingan jumlah hasil rekomendasi dari masing-masing pendekatan:
+Perbandingan dilakukan untuk mengetahui performa masing-masing pendekatan dalam hal jumlah rekomendasi dan variasinya.
 
 **Visualisasi:**
 
 ![Compare Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png?raw=true)
 
+---
+
 ## Evaluation
 
-Evaluasi dilakukan menggunakan dua pendekatan:
+Evaluasi dilakukan berdasarkan dua pendekatan:
 
-- **Content-Based**: dievaluasi secara kualitatif (genre/artis serupa)
-- **Collaborative Filtering**: dievaluasi secara kuantitatif menggunakan RMSE
+- **Content-Based Filtering:** dievaluasi secara kualitatif berdasarkan genre dan artis yang mirip.
+- **Collaborative Filtering:** dievaluasi secara kuantitatif menggunakan metrik **RMSE**.
 
-Tambahan metrik:
-- **Precision@5**: Mengukur berapa banyak lagu yang relevan dari 5 lagu yang direkomendasikan
-- **Recall@5**: Mengukur berapa banyak lagu relevan dari total lagu yang disukai user yang berhasil direkomendasikan
+**Tambahan metrik evaluasi:**
+- **Precision@5:** Mengukur proporsi lagu relevan dari 5 lagu yang direkomendasikan.
+- **Recall@5:** Mengukur proporsi lagu relevan yang berhasil direkomendasikan dari total lagu yang disukai.
 
-**Hasil Precision dan Recall:**
+**Visualisasi Evaluasi:**
 
 ![Precision & Recall](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/precision_recall.png?raw=true)
 
@@ -119,6 +165,13 @@ Tambahan metrik:
 
 ## Kesimpulan
 
-Sistem rekomendasi ini membuktikan bahwa pendekatan berbasis konten dapat memberikan hasil yang cepat dan konsisten, terutama untuk lagu-lagu dengan fitur audio yang dominan. Sementara itu, pendekatan collaborative filtering lebih personal karena mempertimbangkan preferensi pengguna lain, tetapi membutuhkan cukup banyak data interaksi pengguna. Kedua pendekatan saling melengkapi dan idealnya dapat digabungkan dalam sistem produksi untuk meningkatkan akurasi dan relevansi rekomendasi.
+Sistem rekomendasi yang dikembangkan dalam proyek ini berhasil menunjukkan bahwa:
+
+- **Content-Based Filtering** mampu memberikan hasil cepat dan konsisten, cocok untuk pengguna baru.
+- **Collaborative Filtering** menghasilkan rekomendasi yang lebih personal berdasarkan perilaku pengguna lain.
+- **Gabungan kedua metode** memberikan cakupan rekomendasi yang lebih kuat dan relevan.
+
+Penerapan kedua pendekatan secara bersamaan dapat meningkatkan kualitas sistem rekomendasi dalam skenario dunia nyata.
 
 ---
+
