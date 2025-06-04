@@ -51,6 +51,10 @@ Dataset berasal dari [Kaggle](https://www.kaggle.com/datasets/parasharmanas/movi
 | `movies.csv` | ID film, judul film, dan genre               |
 | `ratings.csv`| Interaksi user (userId, movieId, rating, timestamp) |
 
+Jumlah Dataset: 
+- movies.csv: 62423
+- ratings.csv: 25000095
+
 Dataset tidak memiliki missing values penting dan siap diproses.
 
 ---
@@ -70,7 +74,8 @@ File `movies.csv` menyimpan informasi dasar mengenai film:
 2. **Pembersihan Judul**: Menghapus bagian tahun dari kolom `title` untuk menyisakan hanya judul murni.
 3. **Genre Kosong**: Baris dengan genre "(no genres listed)" dihapus dari dataset.
 4. **Tokenisasi Genre**: Untuk TF-IDF vectorization, genre diubah menjadi string token unik.
-5. Dataset hasil proses disiapkan sebagai `df_film`.
+5. **TF-IDF Vectorization**: Dilakukan vektorisasi genre menggunakan TF-IDF sebagai persiapan fitur teks untuk content-based filtering.
+6. Dataset hasil proses disiapkan sebagai `df_film`.
 
 ---
 
@@ -85,9 +90,11 @@ File `ratings.csv` berisi data interaksi pengguna terhadap film:
 
 **Langkah-langkah:**
 1. **Konversi Waktu**: Timestamp diubah menjadi format `datetime`.
-2. **Pembulatan Rating**: Jika diperlukan, rating dibulatkan ke atas (menggunakan `ceil`) agar bisa dianalisis dalam kelas diskret.
-3. **Gabung dengan `movies.csv`**: Dataset digabung berdasarkan `movieId` agar setiap rating memiliki informasi film lengkap.
-4. **Encoding ID**: `userId` dan `movieId` diubah menjadi angka urut untuk digunakan dalam model embedding.
+2. **Gabung dengan `movies.csv`**: Dataset digabung berdasarkan `movieId` agar setiap rating memiliki informasi film lengkap.
+3. **Encoding ID**: `userId` dan `movieId` diubah menjadi angka urut untuk digunakan dalam model embedding.
+4. **Penyaringan Movie Berdasarkan Frekuensi**: Hanya film yang muncul minimal 50 kali disertakan untuk menjamin kualitas data.
+5. **Normalisasi Rating**: Nilai rating dinormalisasi sebelum digunakan dalam model Collaborative Filtering.
+6. **Pemisahan Data**: Dataset dibagi menjadi data training dan validasi.
 
 ---
 
@@ -133,20 +140,20 @@ Contoh output:
 
 Evaluasi dilakukan menggunakan metrik:
 
-- **Precision@10** – menghitung proporsi film yang direkomendasikan yang benar-benar relevan.
+- **Precision@10** – menghitung proporsi film yang direkomendasikan yang benar-benar relevan dari 10 teratas.
+  - Implementasi dilakukan dengan membandingkan hasil rekomendasi dari content-based filtering terhadap histori film yang disukai pengguna.
+  - Precision dihitung sebagai:  
+    `Precision@10 = (jumlah film relevan di top 10 rekomendasi) / 10`
+
+**Contoh Perhitungan:**
+Jika dari 10 film yang direkomendasikan, 7 di antaranya pernah diberi rating tinggi oleh pengguna, maka Precision@10 = 0.7.
 
 Visualisasi precision:
 ![Precision@10 Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_content-based.png)
 
-Visualisasi loss training:
-![Loss Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Loss_content-based.png)
-
-Visualisasi RMSE:
-![RMSE Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-content_based.png)
-
-**Interpretasi:**
-- Precision mendekati 1 menandakan sistem menghasilkan rekomendasi yang sangat relevan.
-- RMSE training yang rendah menunjukkan model bisa mempelajari pola rating dengan baik.
+**Catatan:**
+- Karena content-based filtering berbasis TF-IDF dan cosine similarity **tidak melalui proses training**, maka **tidak relevan** untuk menampilkan metrik seperti *Loss* atau *RMSE*. Oleh karena itu, grafik ‘Loss Content-Based’ dan ‘RMSE Content-Based’ diabaikan dari evaluasi.
+- Metrik yang umum digunakan untuk evaluasi sistem berbasis rekomendasi konten seperti ini meliputi: **Precision@K**, **Recall@K**, atau **NDCG@K**.
 
 ---
 
@@ -177,4 +184,3 @@ Visualisasi RMSE:
 - **Content-Based Filtering** unggul dalam cold-start user, menghasilkan rekomendasi berbasis kesamaan konten.
 - **Collaborative Filtering** memberikan hasil lebih personal berdasarkan histori interaksi, cocok untuk pengguna dengan riwayat rating yang kaya.
 - Kombinasi kedua pendekatan direkomendasikan untuk sistem rekomendasi yang optimal dalam skala besar.
-
