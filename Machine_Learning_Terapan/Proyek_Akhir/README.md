@@ -57,14 +57,51 @@ Dataset tidak memiliki missing values penting dan siap diproses.
 
 ## Data Preparation
 
-Langkah-langkah preprocessing meliputi:
+### Proses Pengolahan Data Film (`movies.csv`)
 
-1. Ekstraksi tahun rilis dari `title`.
-2. Penghapusan genre kosong atau “(no genres listed)”.
-3. Encoding `userId` dan `movieId` menjadi index numerik.
-4. Normalisasi rating ke rentang [0, 1].
-5. Split data menjadi train dan validation.
-6. Penerapan TF-IDF vectorization pada genre.
+File `movies.csv` menyimpan informasi dasar mengenai film:
+
+- `movieId`: ID unik untuk setiap film.
+- `title`: Judul film beserta tahun rilis (contoh: *The Matrix (1999)*).
+- `genres`: Genre film, dipisahkan oleh tanda `|` (contoh: *Action|Sci-Fi*).
+
+**Langkah-langkah:**
+1. **Ekstraksi Tahun Rilis**: Mengambil angka tahun dari dalam tanda kurung di judul, disimpan ke kolom `year_of_release`.
+2. **Pembersihan Judul**: Menghapus bagian tahun dari kolom `title` untuk menyisakan hanya judul murni.
+3. **Genre Kosong**: Baris dengan genre "(no genres listed)" dihapus dari dataset.
+4. **Tokenisasi Genre**: Untuk TF-IDF vectorization, genre diubah menjadi string token unik.
+5. Dataset hasil proses disiapkan sebagai `df_film`.
+
+---
+
+### Proses Pengolahan Data Rating (`ratings.csv`)
+
+File `ratings.csv` berisi data interaksi pengguna terhadap film:
+
+- `userId`: ID unik pengguna.
+- `movieId`: ID film yang diberi rating.
+- `rating`: Skor rating yang diberikan (antara 0.5 hingga 5.0).
+- `timestamp`: Waktu rating dalam format UNIX.
+
+**Langkah-langkah:**
+1. **Konversi Waktu**: Timestamp diubah menjadi format `datetime`.
+2. **Pembulatan Rating**: Jika diperlukan, rating dibulatkan ke atas (menggunakan `ceil`) agar bisa dianalisis dalam kelas diskret.
+3. **Gabung dengan `movies.csv`**: Dataset digabung berdasarkan `movieId` agar setiap rating memiliki informasi film lengkap.
+4. **Encoding ID**: `userId` dan `movieId` diubah menjadi angka urut untuk digunakan dalam model embedding.
+
+---
+
+### Pembentukan Data Film Terstruktur (`df_film`)
+
+Setelah penggabungan dan pembersihan data dari `movies.csv` dan `ratings.csv`, dibuat dataframe baru `df_film` yang berisi:
+
+- `film_id`: ID film (hasil dari encoding `movieId`)
+- `film_name`: Judul film tanpa tahun
+- `genre`: Genre film dalam bentuk string
+
+Data ini disusun ulang menjadi dataframe final yang siap digunakan untuk:
+- **TF-IDF vectorization** dalam content-based filtering
+- Analisis dan visualisasi berdasarkan metadata film
 
 ---
 
