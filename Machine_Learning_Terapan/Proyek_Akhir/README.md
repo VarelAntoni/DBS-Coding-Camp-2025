@@ -1,189 +1,157 @@
-# Laporan Proyek Machine Learning - Muhammad Varel Antoni
+# Laporan Proyek Machine Learning - [Muhammad Varel Antoni]
 
 ## Project Overview
 
-Rekomendasi musik telah menjadi fitur penting dalam industri streaming modern seperti Spotify, YouTube Music, dan Apple Music. Seiring bertambahnya jumlah lagu secara eksponensial, pengguna menghadapi tantangan dalam menemukan musik yang sesuai dengan preferensi mereka. Untuk itu, dibutuhkan sistem rekomendasi yang dapat memberikan saran lagu secara relevan dan personal.
+Rekomendasi film merupakan salah satu aplikasi machine learning yang sangat populer di platform streaming dan e-commerce media hiburan. Dengan jutaan film dan pengguna, memberikan rekomendasi yang relevan dan personal menjadi tantangan utama dalam meningkatkan pengalaman pengguna dan retensi pelanggan.
 
-Menurut [Schedl et al., 2015](https://ieeexplore.ieee.org/document/7120121), sistem rekomendasi musik dapat meningkatkan kepuasan pengguna dan engagement secara signifikan. Dalam proyek ini, dikembangkan sistem rekomendasi musik menggunakan dua pendekatan: **Content-Based Filtering** dan **Collaborative Filtering**, berdasarkan dataset Spotify yang diambil dari [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset).
+Dalam proyek ini digunakan dataset dari Kaggle: [Movie Recommendation System Dataset by parasharmanas](https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system), yang terdiri dari metadata film dan histori rating pengguna. Sistem rekomendasi dibangun dengan dua pendekatan utama: content-based filtering dan collaborative filtering berbasis embedding neural network.
+
+Sistem rekomendasi ini bertujuan menyajikan film yang sesuai preferensi pengguna berdasarkan histori interaksi dan konten film, membantu mengatasi information overload.
+
+Referensi:
+
+- Ricci, F., Rokach, L., Shapira, B., & Kantor, P. B. (2011). *Recommender Systems Handbook*. Springer.
+
+---
 
 ## Business Understanding
 
-Sistem rekomendasi yang efektif dapat meningkatkan retensi pengguna dan waktu penggunaan aplikasi, sekaligus memberikan pengalaman yang lebih personal dan menyenangkan.
-
 ### Problem Statements
 
-- Bagaimana merekomendasikan lagu yang mirip dengan lagu favorit pengguna berdasarkan karakteristik audio?
-- Bagaimana memprediksi lagu yang belum pernah didengar oleh pengguna, tetapi kemungkinan besar akan disukai?
+- Bagaimana membangun sistem rekomendasi film yang dapat menyesuaikan dengan preferensi, minat, atau perilaku pengguna?
+- Bagaimana mengevaluasi kinerja dan hasil dari model dalam mengembangkan sistem rekomendasi film yang disesuaikan dengan preferensi, minat, atau perilaku pengguna?
 
 ### Goals
 
-- Menghasilkan daftar lagu mirip secara konten dengan lagu favorit pengguna.
-- Mengembangkan sistem prediksi lagu baru berdasarkan pola rating dari pengguna lain.
+- Mengembangkan sistem rekomendasi yang dapat menyesuaikan preferensi pengguna.
+- Mengevaluasi performa dua pendekatan (content-based dan collaborative) menggunakan metrik evaluasi yang relevan.
 
-### Solution Statements
+### Solution Approach
 
-- Menggunakan **Content-Based Filtering** dengan pendekatan **cosine similarity** antar fitur audio (`danceability`, `energy`, `valence`, dll).
-- Menerapkan **Collaborative Filtering** menggunakan algoritma **KNNBasic** dari library `Surprise` untuk mempelajari interaksi user-item.
+#### 1. Content-Based Filtering
+
+- Menggunakan TF-IDF pada kolom `genres`.
+- Menghitung cosine similarity antar film berdasarkan genre.
+- Memberikan rekomendasi berdasarkan film yang memiliki kemiripan konten.
+
+#### 2. Collaborative Filtering (Neural Network)
+
+- Menggunakan embedding layer untuk user dan movie.
+- Model prediksi rating berdasarkan representasi vektor user dan item.
+- Optimizer: Adam, loss function: binary crossentropy.
+
+---
 
 ## Data Understanding
 
-Dataset digunakan berasal dari: [Spotify Tracks Dataset - Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)  
-Jumlah lagu dalam dataset asli lebih dari 300.000, namun diambil **20.000 sampel** untuk efisiensi komputasi.
+Dataset berasal dari [Kaggle](https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system), terdiri dari dua file:
 
-### Fitur-Fitur Utama:
-- `track_id`: ID unik setiap lagu
-- `track_name`: Judul lagu
-- `artists`: Nama artis
-- `danceability`, `energy`, `valence`, `tempo`, `acousticness`, `instrumentalness`: Fitur numerik dari audio
-- `track_genre`: Genre dari lagu
+| File         | Deskripsi                                    |
+|--------------|----------------------------------------------|
+| `movies.csv` | ID film, judul film, dan genre               |
+| `ratings.csv`| Interaksi user (userId, movieId, rating, timestamp) |
 
-Dataset memiliki beberapa missing value dan duplikat, khususnya pada kolom `Unnamed: 0` dan beberapa `track_id`, yang telah dibersihkan sebelum modeling.
+Dataset tidak memiliki missing values penting dan siap diproses.
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+Visualisasi berikut membantu memahami sebaran data dan performa awal pendekatan:
+
+- **Distribusi rating & metrik evaluasi (CBF):**
+  ![RMSE Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-content_based.png)
+  ![Precision Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_content-based.png)
+
+- **Distribusi metrik evaluasi (Collaborative):**
+  ![RMSE Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-collaborative.png)
+  ![Precision Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_collaborative.png)
+
+---
 
 ## Data Preparation
 
-Langkah-langkah yang dilakukan sebelum pelatihan model:
-1. Sampling 20.000 lagu dari dataset utama.
-2. Menghapus kolom tidak relevan (`Unnamed: 0`) dan nilai kosong.
-3. Menghapus duplikat berdasarkan `track_id`.
-4. Normalisasi fitur numerik (`danceability`, `energy`, dll) menggunakan `StandardScaler`.
-5. Simulasi interaksi pengguna:
-   - Dibuat 50 user fiktif.
-   - Setiap user memberikan rating 10–30 lagu secara acak dengan skor 1–5.
+Langkah-langkah preprocessing meliputi:
 
-Langkah ini penting agar data yang digunakan bersih, terstruktur, dan dapat digunakan untuk dua jenis pendekatan filtering.
+1. Ekstraksi tahun rilis dari `title`.
+2. Penghapusan genre kosong atau “(no genres listed)”.
+3. Encoding `userId` dan `movieId` menjadi index numerik.
+4. Normalisasi rating ke rentang [0, 1].
+5. Split data menjadi train dan validation.
+6. Penerapan TF-IDF vectorization pada genre.
+
+---
 
 ## Modeling
 
-### Content-Based Filtering
+### 1. Content-Based Filtering
 
-**Tujuan:**  
-Memberikan rekomendasi lagu berdasarkan kemiripan fitur-fitur audio dari lagu favorit pengguna.
+- Menggunakan TF-IDF vektorisasi pada genre.
+- Menghitung cosine similarity antar film.
+- Rekomendasi berdasarkan film yang mirip dengan film yang disukai pengguna.
 
-**Metode:**  
-Menggunakan cosine similarity antar vektor fitur numerik (`danceability`, `energy`, `valence`, dll). Cosine similarity mengukur sudut antara dua vektor dalam ruang berdimensi tinggi, yang digunakan untuk menentukan kemiripan antar lagu.
+Contoh output:
+![Prediction Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/prediction_content-based.png)
 
-**Langkah-langkah:**
-1. Normalisasi fitur audio menggunakan `StandardScaler`.
-2. Hitung cosine similarity antara lagu input dan seluruh lagu lainnya.
-3. Urutkan berdasarkan skor similarity tertinggi.
-4. Ambil Top-N sebagai hasil rekomendasi.
+### 2. Collaborative Filtering (Neural Network)
 
-**Visualisasi:**
+- Embedding untuk user dan film.
+- Model `RecommenderNet` dengan input user dan film encoded.
+- Mengoutputkan prediksi rating menggunakan sigmoid.
 
-- Cosine similarity:
-  
-  ![Content-Based Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_filtering.png?raw=true)
-
-- Visualisasi distribusi fitur:
-
-  ![Content-Based Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/content-based_visualized.png?raw=true)
-
-**Kelebihan:**
-- Tidak memerlukan data pengguna lain.
-- Cocok untuk cold-start pengguna baru.
-
-**Kekurangan:**
-- Tidak mempertimbangkan selera kolektif.
-- Terbatas pada fitur konten yang tersedia.
-
----
-
-### Collaborative Filtering
-
-**Tujuan:**  
-Memprediksi lagu-lagu yang disukai pengguna berdasarkan pola rating dari pengguna lain.
-
-**Metode:**  
-Menggunakan pendekatan memory-based collaborative filtering dengan algoritma **KNNBasic** dari library `Surprise`. Metode ini membandingkan kemiripan antar item (lagu) berdasarkan rating yang diberikan oleh pengguna.
-
-**Langkah-langkah:**
-1. Bentuk matriks interaksi user-item dari hasil simulasi pengguna.
-2. Latih model `KNNBasic` dengan cosine similarity (`user_based=False`).
-3. Lakukan prediksi rating lagu yang belum dirating oleh user.
-4. Ambil lagu dengan estimasi rating tertinggi sebagai rekomendasi.
-
-**Visualisasi:**
-
-- Prediksi rating lagu:
-
-  ![Collaborative Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_filtering.png?raw=true)
-
-- Top-N rekomendasi hasil prediksi:
-
-  ![Collaborative Visualized](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/collaborative_visualized.png?raw=true)
-
-**Kelebihan:**
-- Menghasilkan rekomendasi yang lebih personal.
-- Menggunakan pola kolektif seluruh pengguna.
-
-**Kekurangan:**
-- Tidak cocok untuk pengguna baru atau lagu baru (cold-start).
-- Bergantung pada data interaksi.
-
----
-
-### Combine Filtering
-
-**Tujuan:**  
-Menggabungkan hasil dari content-based dan collaborative filtering untuk memperkaya kualitas rekomendasi.
-
-**Metode:**  
-Gabungkan daftar rekomendasi dari kedua pendekatan. Hasil bisa disortir berdasarkan skor gabungan, skor tertinggi, atau frekuensi kemunculan.
-
-**Visualisasi:**
-
-![Combine Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/combine_filtering.png?raw=true)
-
----
-
-### Compare Filtering
-
-Perbandingan dilakukan untuk mengetahui performa masing-masing pendekatan dalam hal jumlah rekomendasi dan variasinya.
-
-**Visualisasi:**
-
-![Compare Filtering](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/blob/main/Machine_Learning_Terapan/Proyek_Akhir/images/compare_filtering.png?raw=true)
+Contoh output:
+![Prediction Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/prediction_collaborative.png)
 
 ---
 
 ## Evaluation
 
-Evaluasi dilakukan untuk menilai efektivitas sistem rekomendasi berdasarkan dua pendekatan: Content-Based Filtering dan Collaborative Filtering.
-
 ### 1. Content-Based Filtering
 
-Pendekatan ini dievaluasi secara **kualitatif** dengan memeriksa kesesuaian genre, artis, dan karakteristik audio antara lagu input dan lagu yang direkomendasikan. Selain itu, metrik berikut digunakan:
+Evaluasi dilakukan menggunakan metrik:
 
-- **Precision@5**: Mengukur persentase lagu yang relevan dari 5 rekomendasi teratas.
-- **Recall@5**: Mengukur seberapa banyak lagu relevan yang berhasil direkomendasikan dari total lagu yang disukai.
+- **Precision@10** – menghitung proporsi film yang direkomendasikan yang benar-benar relevan.
 
-Hasil menunjukkan bahwa rekomendasi memiliki kemiripan tinggi terhadap lagu input, dengan Precision dan Recall yang cukup tinggi (Precision@5 ≈ 0.80, Recall@5 ≈ 0.67).
+Visualisasi precision:
+![Precision@10 Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_content-based.png)
+
+Visualisasi loss training:
+![Loss Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Loss_content-based.png)
+
+Visualisasi RMSE:
+![RMSE Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-content_based.png)
+
+**Interpretasi:**
+- Precision mendekati 1 menandakan sistem menghasilkan rekomendasi yang sangat relevan.
+- RMSE training yang rendah menunjukkan model bisa mempelajari pola rating dengan baik.
+
+---
 
 ### 2. Collaborative Filtering
 
-Evaluasi dilakukan secara **kuantitatif** menggunakan:
+Evaluasi juga dilakukan dengan:
 
-- **Root Mean Squared Error (RMSE)**: Mengukur rata-rata selisih kuadrat antara rating yang diprediksi dan aktual. Nilai RMSE yang diperoleh berada di kisaran **0.32 – 0.36**, menandakan performa prediksi yang baik.
-- **Precision@5 dan Recall@5**: Diterapkan dengan membandingkan prediksi Top-5 lagu terhadap data rating asli pengguna.
+- **Precision@10** – relevansi top-N prediksi
+- **Root Mean Squared Error (RMSE)** – untuk menghitung rata-rata deviasi prediksi rating terhadap nilai asli.
 
-### 3. Perbandingan
+Visualisasi precision:
+![Precision@10 Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_collaborative.png)
 
-| Metode               | Evaluasi       | Skor Utama   | Kelebihan                                 | Kelemahan                              |
-|---------------------|----------------|--------------|-------------------------------------------|----------------------------------------|
-| Content-Based       | Precision@5    | ~0.80        | Stabil, cocok untuk pengguna baru         | Tidak mempertimbangkan perilaku user lain |
-| Collaborative       | RMSE, P@5, R@5 | RMSE ~0.33   | Lebih personal dan adaptif                | Butuh data interaksi (cold-start issue) |
+Visualisasi loss training:
+![Loss Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Loss-collaborative.png)
 
-Gabungan kedua pendekatan menghasilkan sistem rekomendasi yang lebih seimbang antara relevansi konten dan preferensi pengguna.
+Visualisasi RMSE:
+![RMSE Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-collaborative.png)
 
-## Kesimpulan
-
-Sistem rekomendasi yang dikembangkan dalam proyek ini berhasil menunjukkan bahwa:
-
-- **Content-Based Filtering** mampu memberikan hasil cepat dan konsisten, cocok untuk pengguna baru.
-- **Collaborative Filtering** menghasilkan rekomendasi yang lebih personal berdasarkan perilaku pengguna lain.
-- **Gabungan kedua metode** memberikan cakupan rekomendasi yang lebih kuat dan relevan.
-
-Penerapan kedua pendekatan secara bersamaan dapat meningkatkan kualitas sistem rekomendasi dalam skenario dunia nyata.
+**Interpretasi:**
+- RMSE validasi rendah (~0.22) menunjukkan performa model yang baik dalam prediksi rating.
+- Perbedaan train vs validation loss kecil, mengindikasikan tidak terjadi overfitting signifikan.
 
 ---
+
+## Conclusion
+
+- **Content-Based Filtering** unggul dalam cold-start user, menghasilkan rekomendasi berbasis kesamaan konten.
+- **Collaborative Filtering** memberikan hasil lebih personal berdasarkan histori interaksi, cocok untuk pengguna dengan riwayat rating yang kaya.
+- Kombinasi kedua pendekatan direkomendasikan untuk sistem rekomendasi yang optimal dalam skala besar.
 
