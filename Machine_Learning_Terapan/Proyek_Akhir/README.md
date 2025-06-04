@@ -34,7 +34,7 @@ Referensi:
 - Menghitung cosine similarity antar film berdasarkan genre.
 - Memberikan rekomendasi berdasarkan film yang memiliki kemiripan konten.
 
-#### 2. Collaborative Filtering (Neural Network)
+#### 2. Collaborative Filtering 
 
 - Menggunakan embedding layer untuk user dan movie.
 - Model prediksi rating berdasarkan representasi vektor user dan item.
