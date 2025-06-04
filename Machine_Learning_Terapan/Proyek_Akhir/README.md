@@ -55,20 +55,6 @@ Dataset tidak memiliki missing values penting dan siap diproses.
 
 ---
 
-## Exploratory Data Analysis (EDA)
-
-Visualisasi berikut membantu memahami sebaran data dan performa awal pendekatan:
-
-- **Distribusi rating & metrik evaluasi (CBF):**
-  ![RMSE Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-content_based.png)
-  ![Precision Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_content-based.png)
-
-- **Distribusi metrik evaluasi (Collaborative):**
-  ![RMSE Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/RMSE-collaborative.png)
-  ![Precision Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_collaborative.png)
-
----
-
 ## Data Preparation
 
 Langkah-langkah preprocessing meliputi:
