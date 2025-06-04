@@ -79,7 +79,7 @@ Langkah-langkah preprocessing meliputi:
 Contoh output:
 ![Prediction Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/prediction_content-based.png)
 
-### 2. Collaborative Filtering (Neural Network)
+### 2. Collaborative Filtering 
 
 - Embedding untuk user dan film.
 - Model `RecommenderNet` dengan input user dan film encoded.
