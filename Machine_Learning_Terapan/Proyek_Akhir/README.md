@@ -55,7 +55,10 @@ Jumlah Dataset:
 - movies.csv: 62423
 - ratings.csv: 25000095
 
-Dataset tidak memiliki missing values penting dan siap diproses.
+movies.csv dan ratings.csv tidak memiliki missing values dan data penting dan siap diproses.
+
+jumlah duplikat berdasarkan: - movieID: 24620127
+                             - title: 24620647
 
 ---
 
@@ -89,6 +92,7 @@ File `ratings.csv` berisi data interaksi pengguna terhadap film:
 - `timestamp`: Waktu rating dalam format UNIX.
 
 **Langkah-langkah:**
+1. **Hapus Duplikat**: menghapus duplikat berdasarkan movieID dan title
 1. **Konversi Waktu**: Timestamp diubah menjadi format `datetime`.
 2. **Gabung dengan `movies.csv`**: Dataset digabung berdasarkan `movieId` agar setiap rating memiliki informasi film lengkap.
 3. **Encoding ID**: `userId` dan `movieId` diubah menjadi angka urut untuk digunakan dalam model embedding.
