@@ -57,8 +57,11 @@ Jumlah Dataset:
 
 movies.csv dan ratings.csv tidak memiliki missing values dan data penting dan siap diproses.
 
-jumlah duplikat berdasarkan: - movieID: 24620127
-                             - title: 24620647
+jumlah duplikat berdasarkan: 
+  - movieID: 24620127
+  - title: 24620647
+
+terdapat outier pada kolom year_of_release pada variabel films
 
 ---
 
@@ -102,6 +105,8 @@ File `ratings.csv` berisi data interaksi pengguna terhadap film:
 
 ---
 
+sebelum pembentukan data film, hapus outlier pada variabel year_of_release
+
 ### Pembentukan Data Film Terstruktur (`df_film`)
 
 Setelah penggabungan dan pembersihan data dari `movies.csv` dan `ratings.csv`, dibuat dataframe baru `df_film` yang berisi:
@@ -120,20 +125,41 @@ Data ini disusun ulang menjadi dataframe final yang siap digunakan untuk:
 
 ### 1. Content-Based Filtering
 
-- Menggunakan TF-IDF vektorisasi pada genre.
-- Menghitung cosine similarity antar film.
-- Rekomendasi berdasarkan film yang mirip dengan film yang disukai pengguna.
+Pendekatan Content-Based Filtering dibangun berdasarkan kemiripan konten film, khususnya kolom `genres`. Proses yang dilakukan meliputi:
 
-Contoh output:
+- **TF-IDF Vectorization**: Genre film diubah menjadi vektor numerik menggunakan teknik TF-IDF.
+- **Cosine Similarity**: Digunakan untuk menghitung tingkat kemiripan antar film.  
+  Cosine Similarity mengukur sudut antar dua vektor genre dalam ruang multidimensi:
+  - Nilai 1 berarti film sangat mirip.
+  - Nilai 0 berarti film tidak memiliki kemiripan.
+- **Rekomendasi**: Sistem menyarankan film yang memiliki kemiripan konten paling tinggi terhadap film yang pernah disukai oleh pengguna.
+
+Contoh output sistem:
 ![Prediction Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/prediction_content-based.png)
 
-### 2. Collaborative Filtering 
+---
 
-- Embedding untuk user dan film.
-- Model `RecommenderNet` dengan input user dan film encoded.
-- Mengoutputkan prediksi rating menggunakan sigmoid.
+### 2. Collaborative Filtering (Deep Learning dengan Embedding)
 
-Contoh output:
+Pendekatan Collaborative Filtering menggunakan model neural network sederhana berbasis embedding untuk mempelajari interaksi antara user dan film.
+
+#### Struktur Model:
+- **Embedding Layer**:
+  - Dua embedding: untuk `userId` dan `movieId`.
+  - Ukuran embedding (dimensi vektor): tidak disebutkan eksplisit, namun umumnya digunakan 50 atau 100.
+- **Dot Product**: Hasil embedding user dan movie dikalikan (dot product) untuk menghasilkan prediksi rating.
+- **Activation Function**: Sigmoid, menghasilkan output antara 0 dan 1.
+
+#### Training Configuration:
+- **Loss Function**: Binary Crossentropy – sesuai karena output sigmoid bernilai probabilistik.
+- **Optimizer**: Adam
+- **Parameter Pelatihan**:
+  - Epoch: 10
+  - Batch Size: 64
+
+Model dilatih menggunakan data rating yang telah di-normalisasi dan di-encode. Setelah pelatihan, model digunakan untuk memprediksi rating film yang belum ditonton oleh user dan menyarankan berdasarkan skor tertinggi.
+
+Contoh output sistem:
 ![Prediction Collaborative](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/prediction_collaborative.png)
 
 ---
