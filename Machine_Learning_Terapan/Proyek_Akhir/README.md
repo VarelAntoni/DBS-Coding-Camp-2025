@@ -61,7 +61,7 @@ jumlah duplikat berdasarkan:
   - movieID: 24620127
   - title: 24620647
 
-terdapat outier pada kolom year_of_release pada variabel films
+terdapat outlier pada kolom year_of_release pada variabel films
 
 ---
 
@@ -106,6 +106,7 @@ File `ratings.csv` berisi data interaksi pengguna terhadap film:
 ---
 
 sebelum pembentukan data film, hapus outlier pada variabel year_of_release
+Ganti string yang cocok dengan pola regex '[nS]ci-Fi' menjadi 'Scifi' di kolom 'genres'
 
 ### Pembentukan Data Film Terstruktur (`df_film`)
 
@@ -117,6 +118,10 @@ Setelah penggabungan dan pembersihan data dari `movies.csv` dan `ratings.csv`, d
 
 Data ini disusun ulang menjadi dataframe final yang siap digunakan untuk:
 - **TF-IDF vectorization** dalam content-based filtering
+- **Cosine Similarity**: Digunakan untuk menghitung tingkat kemiripan antar film.  
+  Cosine Similarity mengukur sudut antar dua vektor genre dalam ruang multidimensi:
+  - Nilai 1 berarti film sangat mirip.
+  - Nilai 0 berarti film tidak memiliki kemiripan.
 - Analisis dan visualisasi berdasarkan metadata film
 
 ---
@@ -127,11 +132,6 @@ Data ini disusun ulang menjadi dataframe final yang siap digunakan untuk:
 
 Pendekatan Content-Based Filtering dibangun berdasarkan kemiripan konten film, khususnya kolom `genres`. Proses yang dilakukan meliputi:
 
-- **TF-IDF Vectorization**: Genre film diubah menjadi vektor numerik menggunakan teknik TF-IDF.
-- **Cosine Similarity**: Digunakan untuk menghitung tingkat kemiripan antar film.  
-  Cosine Similarity mengukur sudut antar dua vektor genre dalam ruang multidimensi:
-  - Nilai 1 berarti film sangat mirip.
-  - Nilai 0 berarti film tidak memiliki kemiripan.
 - **Rekomendasi**: Sistem menyarankan film yang memiliki kemiripan konten paling tinggi terhadap film yang pernah disukai oleh pengguna.
 
 Contoh output sistem:
@@ -166,26 +166,26 @@ Contoh output sistem:
 
 ## Evaluation
 
+## Evaluation
+
 ### 1. Content-Based Filtering
 
 Evaluasi dilakukan menggunakan metrik:
 
-- **Precision@10** – menghitung proporsi film yang direkomendasikan yang benar-benar relevan dari 10 teratas.
-  - Implementasi dilakukan dengan membandingkan hasil rekomendasi dari content-based filtering terhadap histori film yang disukai pengguna.
-  - Precision dihitung sebagai:  
-    `Precision@10 = (jumlah film relevan di top 10 rekomendasi) / 10`
+- **Precision@10** – menghitung proporsi film relevan dari 10 rekomendasi teratas.  
+  Contoh: jika 7 dari 10 film direkomendasikan pernah diberi rating tinggi, maka Precision@10 = 0.7
 
-**Contoh Perhitungan:**
-Jika dari 10 film yang direkomendasikan, 7 di antaranya pernah diberi rating tinggi oleh pengguna, maka Precision@10 = 0.7.
+- **Recall@10** – mengukur seberapa banyak film relevan milik pengguna yang berhasil ditemukan dalam top-10.  
+  Contoh: jika pengguna memiliki 8 film relevan dan 6 di antaranya muncul di top-10, maka Recall@10 = 0.75
 
-Visualisasi precision:
-![Precision@10 Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Precision@10_content-based.png)
+- **NDCG@10** – menilai seberapa baik sistem menempatkan item relevan di posisi atas daftar rekomendasi, dengan memberikan bobot lebih besar pada posisi yang lebih tinggi.
 
 **Catatan:**
-- Karena content-based filtering berbasis TF-IDF dan cosine similarity **tidak melalui proses training**, maka **tidak relevan** untuk menampilkan metrik seperti *Loss* atau *RMSE*. Oleh karena itu, grafik ‘Loss Content-Based’ dan ‘RMSE Content-Based’ diabaikan dari evaluasi.
-- Metrik yang umum digunakan untuk evaluasi sistem berbasis rekomendasi konten seperti ini meliputi: **Precision@K**, **Recall@K**, atau **NDCG@K**.
+- Karena Content-Based Filtering berbasis TF-IDF dan cosine similarity **tidak melalui proses training**, maka metrik seperti *Loss* dan *RMSE* **tidak relevan**.
+- Metrik evaluasi yang digunakan berfokus pada kualitas peringkat, seperti: **Precision@K**, **Recall@K**, dan **NDCG@K**.
 
----
+Visualisasi hasil evaluasi Content-Based Filtering:  
+![Evaluasi Content-Based](https://github.com/VarelAntoni/DBS-Coding-Camp-2025/raw/main/Machine_Learning_Terapan/Proyek_Akhir/images/Content-Based_Evaluation_Metrics.png)
 
 ### 2. Collaborative Filtering
 
